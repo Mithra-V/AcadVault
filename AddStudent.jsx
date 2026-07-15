@@ -6,13 +6,23 @@ import { useNavigate } from "react-router-dom";
 export default function AddStudent() {
   const [name, setName] = useState("");
   const [department, setDepartment] = useState("");
+  const [rollNo, setRollNo] = useState("");
+  const [email, setEmail] = useState("");
+  const [subjects, setSubjects] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleAdd = async (e) => {
     e.preventDefault();
     setLoading(true);
-    await addDoc(collection(db, "students"), { name, department, createdAt: new Date() });
+    await addDoc(collection(db, "students"), {
+      name,
+      department,
+      rollNo,
+      email,
+      subjects: subjects.split(",").map(s => s.trim()).filter(Boolean),
+      createdAt: new Date()
+    });
     navigate("/dashboard");
   };
 
@@ -42,6 +52,21 @@ export default function AddStudent() {
               <option>AIDS</option>
               <option>AIML</option>
             </select>
+          </div>
+          <div style={s.fieldWrap}>
+            <label style={s.label}>ROLL NUMBER</label>
+            <input style={s.input} placeholder="Enter roll number"
+              value={rollNo} onChange={e => setRollNo(e.target.value)} required/>
+          </div>
+          <div style={s.fieldWrap}>
+            <label style={s.label}>EMAIL</label>
+            <input style={s.input} type="email" placeholder="Enter email address"
+              value={email} onChange={e => setEmail(e.target.value)} required/>
+          </div>
+          <div style={s.fieldWrap}>
+            <label style={s.label}>SUBJECTS</label>
+            <input style={s.input} placeholder="e.g. Maths, Physics, DSA"
+              value={subjects} onChange={e => setSubjects(e.target.value)}/>
           </div>
           <button style={s.btn} type="submit" disabled={loading}>
             {loading ? "Saving..." : "Add Student →"}
